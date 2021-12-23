@@ -5,16 +5,62 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const outputPath = path.resolve(__dirname, 'dist');
 
+// set mode
+const mode = process.env.NODE_ENV
+    ? process.env.NODE_ENV
+    : 'production';
+
 module.exports = {
-    mode: 'development',
+    mode: mode,
     entry: {
-        app: require.resolve('./src/index'),
+        app: require.resolve('./src/entrypoint'),
     },
+    context: path.resolve('./'),
     resolve: {
-        extensions: ['.ts', '.js'],
+        extensions: ['.js', '.jsx'],
+        roots: [
+            path.resolve('./src'),
+        ],
     },
     module: {
         rules: [
+            {
+                test: /\.html$/,
+                loader: 'html-loader'
+            },
+            {
+                test: /\.(js|jsx)$/,
+                include: [
+                    path.resolve(__dirname, ".")
+                ],
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: [
+                            [
+                                '@babel/preset-env',
+                                {
+                                    targets: {
+                                        node: true,
+                                    },
+                                },
+                            ],
+                            '@babel/preset-react'
+                        ],
+                        plugins: [
+                            '@babel/plugin-syntax-dynamic-import',
+                            '@babel/plugin-syntax-import-meta',
+                            '@babel/plugin-proposal-class-properties',
+                            '@babel/plugin-proposal-private-methods',
+                            '@babel/plugin-proposal-nullish-coalescing-operator',
+                            '@babel/plugin-proposal-function-bind',
+                            '@babel/plugin-proposal-optional-chaining',
+                            '@babel/plugin-proposal-json-strings',
+                        ]
+                    }
+                },
+            },
             {
                 test: /\.yaml$/,
                 use: [
@@ -35,16 +81,16 @@ module.exports = {
         new CleanWebpackPlugin([
             outputPath
         ]),
-        new CopyWebpackPlugin([
-            {
-                // Copy the Swagger OAuth2 redirect file to the project root;
-                // that file handles the OAuth2 redirect after authenticating the end-user.
-                from: require.resolve('swagger-ui/dist/oauth2-redirect.html'),
-                to: './'
-            }
-        ]),
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: require.resolve('swagger-ui/dist/oauth2-redirect.html'),
+                    to: './'
+                }
+            ]
+        }),
         new HtmlWebpackPlugin({
-            template: './src/index.html'
+            template: "assets/index.html"
         })
     ],
     output: {

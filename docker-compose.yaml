@@ -8,5 +8,3 @@ services:
       context: .
     ports:
       - "80:80"
-    environment:
-      SWAGGER_JSON_FILES: "https://petstore.swagger.io/v2/swagger.json"
