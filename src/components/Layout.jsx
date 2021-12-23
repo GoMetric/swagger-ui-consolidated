@@ -13,14 +13,14 @@ const initSwaggerUi = function(url) {
 
 const mapStateToProps = (state) => {
     return {
-        swaggerSchemaUrl: state && state.swaggerSchemaUrl
+        currentSwaggerSchemaUrl: state && state.currentSwaggerSchemaUrl
     }
 };
 
 function Layout(props) {
     useEffect(() => {
-        if (props.swaggerSchemaUrl) {
-            initSwaggerUi(props.swaggerSchemaUrl)
+        if (props.currentSwaggerSchemaUrl) {
+            initSwaggerUi(props.currentSwaggerSchemaUrl)
         }
     });
 

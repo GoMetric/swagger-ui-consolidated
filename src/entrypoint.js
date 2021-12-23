@@ -8,16 +8,23 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 // store
 let initialState = {
-    swaggerSchemaUrl: null
+    schemas: null,
+    currentSwaggerSchemaUrl: null
 };
 
 let store = createStore(
     function(state = initialState, action) {
         switch (action.type) {
+            case 'CONFIG_LOADED':
+                return {
+                    ...state,
+                    schemas: action.config.schemas,
+                    currentSwaggerSchemaUrl: action.config.schemas[0].url
+                };
             case 'SWAGGER_SCHEMA_CHANGED':
                 return {
                     ...state,
-                    swaggerSchemaUrl: action.swaggerSchemaUrl
+                    currentSwaggerSchemaUrl: action.swaggerSchemaUrl
                 }
         }
     },
@@ -34,4 +41,17 @@ ReactDOM.render(
         <Layout/>
     </Provider>,
     document.getElementById('app')
+);
+
+store.dispatch(
+    (dispatch, getState) => {
+        fetch("/config.json")
+            .then(response => response.json())
+            .then(config => {
+                dispatch({
+                    type: 'CONFIG_LOADED',
+                    config
+                })
+            })
+    }
 );

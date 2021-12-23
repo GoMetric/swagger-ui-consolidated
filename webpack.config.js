@@ -22,6 +22,9 @@ module.exports = {
             path.resolve('./src'),
         ],
     },
+    devtool: mode === "development"
+        ? 'cheap-module-source-map'
+        : false,
     module: {
         rules: [
             {
@@ -85,6 +88,11 @@ module.exports = {
             patterns: [
                 {
                     from: require.resolve('swagger-ui/dist/oauth2-redirect.html'),
+                    to: './'
+                },
+                {
+                    // sample configuration
+                    from: './config.json',
                     to: './'
                 }
             ]

@@ -1,10 +1,21 @@
 import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
 
-
 const mapStateToProps = (state) => {
+    let schemas = [];
+    let currentSwaggerSchemaUrl = null;
+
+    if (state && state.schemas && state.schemas.length > 0) {
+        schemas = state.schemas;
+
+        if (!state.currentSwaggerSchemaUrl) {
+            currentSwaggerSchemaUrl = state.currentSwaggerSchemaUrl;
+        }
+    }
+
     return {
-        swaggerSchemaUrl: state && state.swaggerSchemaUrl
+        schemas,
+        currentSwaggerSchemaUrl
     }
 };
 
@@ -22,12 +33,28 @@ const mapDispatchToProps = dispatch => {
 };
 
 function SchemaSelector(props) {
-    useEffect(() => {
-        props.changeSwaggerSchemaUrl("https://petstore.swagger.io/v2/swagger.json");
-    });
+    const handleSchemaChange = function(e) {
+        const schemaUrl = e.target.value;
+        props.changeSwaggerSchemaUrl(schemaUrl);
+    };
+
+    let selector = null;
+    if (props.schemas && props.schemas.length > 0) {
+        selector = (
+            <div>
+                <select onChange={handleSchemaChange}>
+                    {
+                        props.schemas.map(
+                            schema => (<option value={schema.url} key={schema.url}>{schema.name}</option>)
+                        )
+                    }
+                </select>
+            </div>
+        );
+    }
 
     return (
-        <div>Schema selector</div>
+        <div>{selector}</div>
     );
 }
 
