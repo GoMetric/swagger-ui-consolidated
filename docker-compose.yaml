@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  swagger-ui-consolidated:
+    image: swagger-ui-consolidated
+    container_name: swagger-ui-consolidated
+    build:
+      context: .
+    ports:
+      - "80:80"
+    environment:
+      SWAGGER_JSON_FILES: "https://petstore.swagger.io/v2/swagger.json"
