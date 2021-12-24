@@ -19,6 +19,12 @@ const mapStateToProps = (state) => {
     }
 };
 
+const styles = {
+    select: {
+        fontSize: "18px",
+    }
+};
+
 const mapDispatchToProps = dispatch => {
     return {
         changeSwaggerSchemaUrl: (swaggerSchemaUrl) => {
@@ -42,10 +48,10 @@ function SchemaSelector(props) {
     if (props.schemas && props.schemas.length > 0) {
         selector = (
             <div>
-                <select onChange={handleSchemaChange}>
+                <select onChange={handleSchemaChange} style={styles.select}>
                     {
                         props.schemas.map(
-                            schema => (<option value={schema.url} key={schema.url}>{schema.name}</option>)
+                            schema => (<option value={schema.url} key={schema.url}>{schema.name} ({schema.url})</option>)
                         )
                     }
                 </select>
@@ -54,7 +60,9 @@ function SchemaSelector(props) {
     }
 
     return (
-        <div>{selector}</div>
+        <div className="swagger-ui">
+            <div style={styles.root} className="wrapper block col-12">{selector}</div>
+        </div>
     );
 }
 
