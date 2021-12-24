@@ -3,9 +3,7 @@ FROM node:16.13.1 as build
 WORKDIR /build
 COPY . /build
 
-ENV NODE_ENV=production
-RUN yarn install
-RUN NODE_ENV=production yarn build
+RUN make assets-build-prod
 
 FROM nginx:1.21.4-alpine
 
