@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const mapStateToProps = (state) => {
     return {
@@ -31,15 +32,13 @@ const mapDispatchToProps = dispatch => {
 };
 
 function SchemaSelector(props) {
+    const navigate = useNavigate();
+
     const handleSchemaChange = function(e) {
         const schemaSlug = e.target.value;
 
-        for (let i = 0; i < props.schemas.length; i++) {
-            if (props.schemas[i].slug === schemaSlug) {
-                props.changeSwaggerSchema(props.schemas[i].slug);
-                break;
-            }
-        }
+        // change address
+        navigate("/schemas/" + schemaSlug);
     };
 
     let selector = null;

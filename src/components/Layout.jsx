@@ -47,18 +47,19 @@ const mapDispatchToProps = dispatch => {
 };
 
 function Layout(props) {
-    useEffect(() => {
-        if (props.currentSwaggerSchema) {
-            // build swagger ui
-            initSwaggerUi(props.currentSwaggerSchema.url);
-        }
-    });
+    // build swagger ui
+    if (props.currentSwaggerSchema) {
+        initSwaggerUi(props.currentSwaggerSchema.url);
+    }
 
     // read schema slug from uri
     let params = useParams();
-    if (params.schemaSlug) {
-        props.changeSwaggerSchema(params.schemaSlug);
-    }
+
+    useEffect(() => {
+        if (params.schemaSlug) {
+            props.changeSwaggerSchema(params.schemaSlug);
+        }
+    });
 
     return (
         <div>
