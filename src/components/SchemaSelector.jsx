@@ -1,21 +1,11 @@
 import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const mapStateToProps = (state) => {
-    let schemas = [];
-    let currentSwaggerSchemaUrl = null;
-
-    if (state && state.schemas && state.schemas.length > 0) {
-        schemas = state.schemas;
-
-        if (!state.currentSwaggerSchemaUrl) {
-            currentSwaggerSchemaUrl = state.currentSwaggerSchemaUrl;
-        }
-    }
-
     return {
-        schemas,
-        currentSwaggerSchemaUrl
+        schemas: state && state.schemas,
+        currentSchemaSlug: state && state.currentSchemaSlug
     }
 };
 
@@ -27,11 +17,14 @@ const styles = {
 
 const mapDispatchToProps = dispatch => {
     return {
-        changeSwaggerSchemaUrl: (swaggerSchemaUrl) => {
+        /**
+         * @param {string} schemaSlug
+         */
+        changeSwaggerSchema: (schemaSlug) => {
             dispatch(
                 {
                     type: 'SWAGGER_SCHEMA_CHANGED',
-                    swaggerSchemaUrl
+                    schemaSlug
                 }
             );
         }
@@ -39,19 +32,31 @@ const mapDispatchToProps = dispatch => {
 };
 
 function SchemaSelector(props) {
+    const navigate = useNavigate();
+
+    if (!props.currentSchemaSlug && props.schemas) {
+        navigate("/schemas/" + props.schemas[0].slug);
+    }
+
     const handleSchemaChange = function(e) {
-        const schemaUrl = e.target.value;
-        props.changeSwaggerSchemaUrl(schemaUrl);
+        const schemaSlug = e.target.value;
+
+        // change address
+        navigate("/schemas/" + schemaSlug);
     };
 
     let selector = null;
     if (props.schemas && props.schemas.length > 0) {
         selector = (
             <div>
-                <select onChange={handleSchemaChange} style={styles.select}>
+                <select onChange={handleSchemaChange} style={styles.select} value={props.currentSchemaSlug}>
                     {
                         props.schemas.map(
-                            schema => (<option value={schema.url} key={schema.url}>{schema.name} ({schema.url})</option>)
+                            schema => (
+                                <option value={schema.slug} key={schema.slug}>
+                                    {schema.name} ({schema.url})
+                                </option>
+                            )
                         )
                     }
                 </select>

@@ -26,6 +26,9 @@ module.exports = {
     devtool: mode === "development"
         ? 'cheap-module-source-map'
         : false,
+    devServer: {
+        historyApiFallback: true,
+    },
     module: {
         rules: [
             {
@@ -75,7 +78,7 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: [
-                    mode === "development" ? "style-loader" : MiniCssExtractPlugin.loader,
+                    MiniCssExtractPlugin.loader, // mode === "development" ? "style-loader" : MiniCssExtractPlugin.loader,
                     "css-loader"
                 ]
             }
@@ -100,7 +103,8 @@ module.exports = {
             ]
         }),
         new HtmlWebpackPlugin({
-            template: "assets/index.html"
+            template: "assets/index.html",
+            publicPath: "/"
         })
     ],
     output: {

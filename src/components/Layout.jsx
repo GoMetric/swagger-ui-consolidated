@@ -3,6 +3,7 @@ import SchemaSelector from './SchemaSelector';
 import SwaggerUI from 'swagger-ui'
 import 'swagger-ui/dist/swagger-ui.css';
 import { connect } from 'react-redux';
+import { useParams } from "react-router-dom";
 
 const initSwaggerUi = function(url) {
     let ui = SwaggerUI({
@@ -12,15 +13,51 @@ const initSwaggerUi = function(url) {
 };
 
 const mapStateToProps = (state) => {
+    // find current schema config
+    let currentSwaggerSchema = null;
+    if (state && state.schemas && state.schemas.length > 0 && state.currentSchemaSlug) {
+        for (let i = 0; i < state.schemas.length; i++) {
+            if (state.schemas[i].slug === state.currentSchemaSlug) {
+                currentSwaggerSchema = state.schemas[i];
+                break;
+            }
+        }
+
+    }
+
     return {
-        currentSwaggerSchemaUrl: state && state.currentSwaggerSchemaUrl
+        currentSwaggerSchema: currentSwaggerSchema
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        /**
+         * @param {string} schemaSlug
+         */
+        changeSwaggerSchema: (schemaSlug) => {
+            dispatch(
+                {
+                    type: 'SWAGGER_SCHEMA_CHANGED',
+                    schemaSlug
+                }
+            );
+        }
     }
 };
 
 function Layout(props) {
+    // build swagger ui
+    if (props.currentSwaggerSchema) {
+        initSwaggerUi(props.currentSwaggerSchema.url);
+    }
+
+    // read schema slug from uri
+    let params = useParams();
+
     useEffect(() => {
-        if (props.currentSwaggerSchemaUrl) {
-            initSwaggerUi(props.currentSwaggerSchemaUrl)
+        if (params.schemaSlug) {
+            props.changeSwaggerSchema(params.schemaSlug);
         }
     });
 
@@ -32,4 +69,4 @@ function Layout(props) {
     );
 }
 
-export default connect(mapStateToProps, null)(Layout);
+export default connect(mapStateToProps, mapDispatchToProps)(Layout);
