@@ -3,19 +3,19 @@ import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => {
     let schemas = [];
-    let currentSwaggerSchemaUrl = null;
+    let currentSwaggerSchema = null;
 
     if (state && state.schemas && state.schemas.length > 0) {
         schemas = state.schemas;
 
-        if (!state.currentSwaggerSchemaUrl) {
-            currentSwaggerSchemaUrl = state.currentSwaggerSchemaUrl;
+        if (!state.currentSwaggerSchema) {
+            currentSwaggerSchema = state.currentSwaggerSchema;
         }
     }
 
     return {
         schemas,
-        currentSwaggerSchemaUrl
+        currentSwaggerSchema
     }
 };
 
@@ -27,11 +27,11 @@ const styles = {
 
 const mapDispatchToProps = dispatch => {
     return {
-        changeSwaggerSchemaUrl: (swaggerSchemaUrl) => {
+        changeSwaggerSchema: (swaggerSchema) => {
             dispatch(
                 {
                     type: 'SWAGGER_SCHEMA_CHANGED',
-                    swaggerSchemaUrl
+                    swaggerSchema
                 }
             );
         }
@@ -40,8 +40,15 @@ const mapDispatchToProps = dispatch => {
 
 function SchemaSelector(props) {
     const handleSchemaChange = function(e) {
-        const schemaUrl = e.target.value;
-        props.changeSwaggerSchemaUrl(schemaUrl);
+        const schemaSlug = e.target.value;
+
+        let schema = null;
+        for (let i = 0; i < props.schemas.length; i++) {
+            if (props.schemas[i].slug === schemaSlug) {
+                props.changeSwaggerSchema(props.schemas[i]);
+                break;
+            }
+        }
     };
 
     let selector = null;
@@ -51,7 +58,7 @@ function SchemaSelector(props) {
                 <select onChange={handleSchemaChange} style={styles.select}>
                     {
                         props.schemas.map(
-                            schema => (<option value={schema.url} key={schema.url}>{schema.name} ({schema.url})</option>)
+                            schema => (<option value={schema.slug} key={schema.url}>{schema.name} ({schema.url})</option>)
                         )
                     }
                 </select>

@@ -9,7 +9,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 // store
 let initialState = {
     schemas: null,
-    currentSwaggerSchemaUrl: null
+    currentSwaggerSchema: null
 };
 
 let store = createStore(
@@ -19,12 +19,14 @@ let store = createStore(
                 return {
                     ...state,
                     schemas: action.config.schemas,
-                    currentSwaggerSchemaUrl: action.config.schemas[0].url
+                    /** {slug: string, url: string: name: string} */
+                    currentSwaggerSchema: action.config.schemas[0]
                 };
             case 'SWAGGER_SCHEMA_CHANGED':
                 return {
                     ...state,
-                    currentSwaggerSchemaUrl: action.swaggerSchemaUrl
+                    /** {slug: string, url: string: name: string} */
+                    currentSwaggerSchema: action.swaggerSchema
                 }
         }
     },
