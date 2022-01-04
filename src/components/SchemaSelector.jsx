@@ -27,11 +27,11 @@ const styles = {
 
 const mapDispatchToProps = dispatch => {
     return {
-        changeSwaggerSchema: (swaggerSchema) => {
+        changeSwaggerSchema: (schemaConfig) => {
             dispatch(
                 {
                     type: 'SWAGGER_SCHEMA_CHANGED',
-                    swaggerSchema
+                    schemaConfig /** {slug: string, url: string: name: string} */
                 }
             );
         }
@@ -42,7 +42,6 @@ function SchemaSelector(props) {
     const handleSchemaChange = function(e) {
         const schemaSlug = e.target.value;
 
-        let schema = null;
         for (let i = 0; i < props.schemas.length; i++) {
             if (props.schemas[i].slug === schemaSlug) {
                 props.changeSwaggerSchema(props.schemas[i]);
@@ -58,7 +57,11 @@ function SchemaSelector(props) {
                 <select onChange={handleSchemaChange} style={styles.select}>
                     {
                         props.schemas.map(
-                            schema => (<option value={schema.slug} key={schema.url}>{schema.name} ({schema.url})</option>)
+                            schema => (
+                                <option value={schema.slug} key={schema.url}>
+                                    {schema.name} ({schema.url})
+                                </option>
+                            )
                         )
                     }
                 </select>
