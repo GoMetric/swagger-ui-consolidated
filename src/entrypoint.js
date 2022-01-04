@@ -19,10 +19,7 @@ let store = createStore(
             case 'CONFIG_LOADED':
                 return {
                     ...state,
-                    schemas: action.config.schemas,
-                    currentSchemaSlug: state.currentSchemaSlug
-                        ? state.currentSchemaSlug
-                        : action.config.schemas[0].slug
+                    schemas: action.config.schemas
                 };
             case 'SWAGGER_SCHEMA_CHANGED':
                 return {

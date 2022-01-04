@@ -34,6 +34,10 @@ const mapDispatchToProps = dispatch => {
 function SchemaSelector(props) {
     const navigate = useNavigate();
 
+    if (!props.currentSchemaSlug && props.schemas) {
+        navigate("/schemas/" + props.schemas[0].slug);
+    }
+
     const handleSchemaChange = function(e) {
         const schemaSlug = e.target.value;
 
