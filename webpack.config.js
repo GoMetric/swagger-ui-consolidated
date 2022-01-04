@@ -26,6 +26,9 @@ module.exports = {
     devtool: mode === "development"
         ? 'cheap-module-source-map'
         : false,
+    devServer: {
+        historyApiFallback: true,
+    },
     module: {
         rules: [
             {
@@ -100,7 +103,8 @@ module.exports = {
             ]
         }),
         new HtmlWebpackPlugin({
-            template: "assets/index.html"
+            template: "assets/index.html",
+            publicPath: "/"
         })
     ],
     output: {

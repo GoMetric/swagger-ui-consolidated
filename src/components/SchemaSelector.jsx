@@ -2,20 +2,9 @@ import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => {
-    let schemas = [];
-    let currentSwaggerSchema = null;
-
-    if (state && state.schemas && state.schemas.length > 0) {
-        schemas = state.schemas;
-
-        if (!state.currentSwaggerSchema) {
-            currentSwaggerSchema = state.currentSwaggerSchema;
-        }
-    }
-
     return {
-        schemas,
-        currentSwaggerSchema
+        schemas: state && state.schemas,
+        currentSchemaSlug: state && state.currentSchemaSlug
     }
 };
 
@@ -27,11 +16,14 @@ const styles = {
 
 const mapDispatchToProps = dispatch => {
     return {
-        changeSwaggerSchema: (schemaConfig) => {
+        /**
+         * @param {string} schemaSlug
+         */
+        changeSwaggerSchema: (schemaSlug) => {
             dispatch(
                 {
                     type: 'SWAGGER_SCHEMA_CHANGED',
-                    schemaConfig /** {slug: string, url: string: name: string} */
+                    schemaSlug
                 }
             );
         }
@@ -44,7 +36,7 @@ function SchemaSelector(props) {
 
         for (let i = 0; i < props.schemas.length; i++) {
             if (props.schemas[i].slug === schemaSlug) {
-                props.changeSwaggerSchema(props.schemas[i]);
+                props.changeSwaggerSchema(props.schemas[i].slug);
                 break;
             }
         }
@@ -54,11 +46,11 @@ function SchemaSelector(props) {
     if (props.schemas && props.schemas.length > 0) {
         selector = (
             <div>
-                <select onChange={handleSchemaChange} style={styles.select}>
+                <select onChange={handleSchemaChange} style={styles.select} value={props.currentSchemaSlug}>
                     {
                         props.schemas.map(
                             schema => (
-                                <option value={schema.slug} key={schema.url}>
+                                <option value={schema.slug} key={schema.slug}>
                                     {schema.name} ({schema.url})
                                 </option>
                             )

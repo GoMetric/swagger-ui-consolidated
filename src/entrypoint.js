@@ -5,11 +5,12 @@ import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // store
 let initialState = {
     schemas: null,
-    currentSwaggerSchema: null
+    currentSchemaSlug: null
 };
 
 let store = createStore(
@@ -19,14 +20,14 @@ let store = createStore(
                 return {
                     ...state,
                     schemas: action.config.schemas,
-                    /** {slug: string, url: string: name: string} */
-                    currentSwaggerSchema: action.config.schemas[0]
+                    currentSchemaSlug: state.currentSchemaSlug
+                        ? state.currentSchemaSlug
+                        : action.config.schemas[0].slug
                 };
             case 'SWAGGER_SCHEMA_CHANGED':
                 return {
                     ...state,
-                    /** {slug: string, url: string: name: string} */
-                    currentSwaggerSchema: action.swaggerSchema
+                    currentSchemaSlug: action.schemaSlug
                 }
         }
     },
@@ -40,7 +41,14 @@ let store = createStore(
 // render layout
 ReactDOM.render(
     <Provider store={store}>
-        <Layout/>
+        <BrowserRouter>
+            <Routes>
+                <Route path="*" element={<Layout/>} />
+                <Route path="/schemas" element={<Layout/>}>
+                    <Route path=":schemaSlug" element={<Layout/>} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
     </Provider>,
     document.getElementById('app')
 );
