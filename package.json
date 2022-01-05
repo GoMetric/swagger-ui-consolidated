@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A simple setup of Swagger UI with Webpack",
   "scripts": {
-    "build": "./node_modules/.bin/webpack-cli build --progress",
+    "build": "./node_modules/.bin/webpack-cli build --progress --mode production",
     "watch": "./node_modules/.bin/webpack-cli serve --mode development"
   },
   "license": "MIT",
