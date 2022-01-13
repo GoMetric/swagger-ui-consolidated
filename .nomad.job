@@ -1,0 +1,82 @@
+job "[[.name]]" {
+  datacenters = ["[[.dc]]"]
+  type = "service"
+
+  group "[[.name]]" {
+    network {
+      mbits = 100
+      port "http" {
+        to = 80
+      }
+    }
+
+    count = 1
+    constraint {
+      operator  = "distinct_hosts"
+      value     = "true"
+    }
+
+    restart {
+      attempts = 3
+      interval = "20s"
+      delay = "5s"
+      mode = "delay"
+    }
+
+    update {
+      max_parallel     = 1
+      min_healthy_time = "10s"
+      healthy_deadline = "1m"
+      auto_revert      = true
+    }
+
+    task "[[.name]]" {
+      driver = "docker"
+      config {
+        image = "gometric/swagger-ui-consolidated:0.2.2"
+        ports = ["http"]
+        volumes = [
+          "local/config.json:/var/www/swagger-ui/config.json"
+        ]
+      }
+
+      resources {
+        cpu    = 50
+        memory = 100
+      }
+
+      service {
+        name = "[[.name]]"
+        port = "http"
+        tags = [
+            "traefik.enable=true",
+            "traefik.http.routers.[[.name]].rule=Host(`[[.urlprefix]]`)",
+            "traefik.http.routers.[[.name]].entrypoints=http"
+        ]
+        check {
+          name     = "swagger-ui"
+          type     = "http"
+          path     = "/"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
+
+      template {
+        data = <<EOF
+{{ $firstItem := true }}
+{
+  "schemas": [{{ range services }}{{- range service .Name }}{{ if in .Tags "swagger-api-docs-provider" }}
+    {
+      "slug": "{{index .ServiceMeta "swagger-api-docs-slug"}}",
+      "name": "{{index .ServiceMeta "swagger-api-docs-name"}}",
+      "url": "{{index .ServiceMeta "swagger-api-docs-url"}}"
+    }{{ if $firstItem }}, {{ end }}{{ $firstItem = false }}{{ end }}{{ end }}{{ end }}
+  ]
+}
+EOF
+        destination = "local/config.json"
+      }
+    }
+  }
+}
