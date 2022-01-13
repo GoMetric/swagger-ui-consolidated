@@ -66,12 +66,12 @@ job "[[.name]]" {
         data = <<EOF
 {{ $firstItem := true }}
 {
-  "schemas": [{{ range services }}{{- range service .Name }}{{ if in .Tags "swagger-api-docs-provider" }}
+  "schemas": [{{ range services }}{{- range service .Name }}{{ if in .Tags "swagger-api-docs-provider" }}{{ if not $firstItem }}, {{ end }}
     {
       "slug": "{{index .ServiceMeta "swagger-api-docs-slug"}}",
       "name": "{{index .ServiceMeta "swagger-api-docs-name"}}",
       "url": "{{index .ServiceMeta "swagger-api-docs-url"}}"
-    }{{ if $firstItem }}, {{ end }}{{ $firstItem = false }}{{ end }}{{ end }}{{ end }}
+    }{{ $firstItem = false }}{{ end }}{{ end }}{{ end }}
   ]
 }
 EOF
