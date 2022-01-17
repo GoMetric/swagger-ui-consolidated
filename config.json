@@ -1,5 +1,5 @@
 {
-  "schemas": [
+  "swagger": [
     {
       "name": "Petstore",
       "slug": "petstore",
@@ -14,6 +14,33 @@
       "slug": "amazon-appconfig",
       "name": "Amazon AppConfig",
       "url": "https://api.apis.guru/v2/specs/amazonaws.com/appconfig/2019-10-09/openapi.json"
+    }
+  ],
+  "asyncapi": [
+    {
+      "name": "BBC",
+      "slug": "bbc",
+      "url:": "https://ik.imagekit.io/ably/s3/xchg_products/async_api_specs/000/000/013/original/bbc.yaml"
+    },
+    {
+      "name": "eBay Notifications",
+      "slug": "ebay-notifications",
+      "url:": "https://raw.githubusercontent.com/apideck-io/api-registry/master/specs/ebay/marketplace-account-deletion-asyncapi-1.0.0-2021-05-21.yaml"
+    },
+    {
+      "name": "Slack Real Time Messaging API",
+      "slug": "slack-messaging",
+      "url:": "https://raw.githubusercontent.com/asyncapi/spec/master/examples/slack-rtm.yml"
+    },
+    {
+      "name": "Slack Events",
+      "slug": "slack-events",
+      "url:": "https://raw.githubusercontent.com/slackapi/slack-api-specs/master/events-api/slack_events_api_async_v1.json"
+    },
+    {
+      "name": "Gitter Streaming API",
+      "slug": "gitter",
+      "url:": "https://raw.githubusercontent.com/asyncapi/spec/master/examples/gitter-streaming.yml"
     }
   ]
 }

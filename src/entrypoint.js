@@ -19,7 +19,8 @@ let store = createStore(
             case 'CONFIG_LOADED':
                 return {
                     ...state,
-                    schemas: action.config.schemas
+                    swagger: action.config.swagger,
+                    asyncapi: action.config.asyncapi,
                 };
             case 'SWAGGER_SCHEMA_CHANGED':
                 return {
