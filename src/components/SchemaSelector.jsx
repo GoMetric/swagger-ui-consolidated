@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const mapStateToProps = (state) => {
     return {
-        swagger: state && state.swagger,
-        asyncapi: state && state.asyncapi,
+        schemas: state && state.schemas,
         currentSchemaSlug: state && state.currentSchemaSlug
     }
 };
