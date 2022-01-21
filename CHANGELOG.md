@@ -2,9 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-* AsyncApi UI
-
 ### Added
+* AsyncApi UI
 * AsyncApi configuration implemented
 * Added `asyncapi` parameter to `config.json`
 ### Changed
