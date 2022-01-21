@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [0.3.0] - 2022-01-21
 ### Added
 * AsyncApi ui implemented
 * Added `asyncapi` parameter to `config.json`
