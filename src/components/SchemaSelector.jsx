@@ -35,14 +35,14 @@ function SchemaSelector(props) {
     const navigate = useNavigate();
 
     if (!props.currentSchemaSlug && props.schemas) {
-        navigate("/schemas/" + props.schemas[0].slug);
+        navigate("/openapi/" + props.schemas[0].slug);
     }
 
     const handleSchemaChange = function(e) {
         const schemaSlug = e.target.value;
 
         // change address
-        navigate("/schemas/" + schemaSlug);
+        navigate("/openapi/" + schemaSlug);
     };
 
     let selector = null;

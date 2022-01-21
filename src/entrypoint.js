@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from "react-dom";
-import Layout from '/components/Layout.jsx';
+import OpenApiLayout from '/components/OpenApiLayout.jsx';
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk'
@@ -40,9 +40,9 @@ ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>
             <Routes>
-                <Route path="*" element={<Layout/>} />
-                <Route path="/schemas" element={<Layout/>}>
-                    <Route path=":schemaSlug" element={<Layout/>} />
+                <Route path="*" element={<OpenApiLayout/>} />
+                <Route path="/openapi" element={<OpenApiLayout/>}>
+                    <Route path=":schemaSlug" element={<OpenApiLayout/>} />
                 </Route>
             </Routes>
         </BrowserRouter>

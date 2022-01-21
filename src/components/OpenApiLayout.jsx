@@ -46,7 +46,7 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-function Layout(props) {
+function OpenApiLayout(props) {
     // build swagger ui
     if (props.currentSwaggerSchema) {
         initSwaggerUi(props.currentSwaggerSchema.url);
@@ -69,4 +69,4 @@ function Layout(props) {
     );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Layout);
+export default connect(mapStateToProps, mapDispatchToProps)(OpenApiLayout);
