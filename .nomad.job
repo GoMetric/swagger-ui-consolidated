@@ -66,13 +66,19 @@ job "[[.name]]" {
         data = <<EOF
 {{ $firstItem := true }}
 {
-  "schemas": [{{ range services }}{{- range service .Name }}{{ if in .Tags "swagger-api-docs-provider" }}{{ if not $firstItem }}, {{ end }}
+  "openapi": [{{ range services }}{{- range service .Name }}{{ if in .Tags "openapi-schema-provider" }}{{ if not $firstItem }}, {{ end }}
     {
-      "slug": "{{index .ServiceMeta "swagger-api-docs-slug"}}",
-      "name": "{{index .ServiceMeta "swagger-api-docs-name"}}",
-      "url": "{{index .ServiceMeta "swagger-api-docs-url"}}"
+      "slug": "{{index .ServiceMeta "openapi-schema-slug"}}",
+      "name": "{{index .ServiceMeta "openapi-schema-name"}}",
+      "url": "{{index .ServiceMeta "openapi-schema-url"}}"
     }{{ $firstItem = false }}{{ end }}{{ end }}{{ end }}
-  ]
+  ],
+  "asyncapi": [{{ range services }}{{- range service .Name }}{{ if in .Tags "asyncapi-schema-provider" }}{{ if not $firstItem }}, {{ end }}
+    {
+      "slug": "{{index .ServiceMeta "asyncapi-schema-slug"}}",
+      "name": "{{index .ServiceMeta "asyncapi-schema-name"}}",
+      "url": "{{index .ServiceMeta "asyncapi-schema-url"}}"
+    }{{ $firstItem = false }}{{ end }}{{ end }}{{ end }}
 }
 EOF
         destination = "local/config.json"
