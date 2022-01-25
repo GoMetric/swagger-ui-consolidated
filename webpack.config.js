@@ -3,7 +3,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const webpack = require('webpack');
 
 const outputPath = path.resolve(__dirname, 'dist');
 
@@ -23,16 +22,6 @@ module.exports = {
         roots: [
             path.resolve('./src'),
         ],
-        fallback: {
-            "http": require.resolve("stream-http"),
-            "https": require.resolve("https-browserify"),
-            "path": require.resolve("path-browserify"),
-            "util": require.resolve("util/"),
-            "stream": require.resolve("stream-browserify"),
-            "zlib": require.resolve("browserify-zlib"),
-            "buffer": require.resolve("buffer/"),
-            "assert": require.resolve("assert/")
-        }
     },
     devtool: mode === "development"
         ? 'cheap-module-source-map'
@@ -96,17 +85,6 @@ module.exports = {
         ]
     },
     plugins: [
-        new webpack.DefinePlugin({
-            process: {
-                env: {
-                    NODE_DEBUG: false,
-                }
-            },
-        }),
-        new webpack.ProvidePlugin({
-            process: 'process/browser',
-            Buffer: ['buffer', 'Buffer'],
-        }),
         new MiniCssExtractPlugin(),
         new CleanWebpackPlugin([
             outputPath

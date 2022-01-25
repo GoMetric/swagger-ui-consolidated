@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const PAGE_OPENAPI = 'openapi';
 export const PAGE_ASYNCAPI = 'asyncapi';
@@ -14,6 +14,18 @@ const mapStateToProps = (state) => {
         currentAsyncApiSchemaSlug: state && state.currentAsyncApiSchemaSlug
     }
 };
+
+const mapDispatchToProps = (dispatch) => ({
+    changeSchema: (page, slug) => {
+        dispatch(
+            {
+                type: 'SCHEMA_CHANGED',
+                currentPage: page,
+                slug: slug
+            }
+        );
+    }
+});
 
 const styles = {
     root: {
@@ -29,6 +41,9 @@ const styles = {
 
 function SchemaSelector(props) {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const currentSlug = location.pathname.split('/')[1] ?? null;
 
     const handleOpenApiSchemaChange = function(e) {
         const schemaSlug = e.target.value;
@@ -54,6 +69,7 @@ function SchemaSelector(props) {
 
     const handleAsyncApiSchemaChange = function(e) {
         const schemaSlug = e.target.value;
+        props.changeSchema(PAGE_ASYNCAPI, schemaSlug);
         navigate("/asyncapi/" + schemaSlug);
     };
 
@@ -75,13 +91,13 @@ function SchemaSelector(props) {
     }
 
     let visibleSelector = null;
-    if (props.currentPage === PAGE_OPENAPI) {
+    if (location.pathname.includes(PAGE_OPENAPI)) {
         visibleSelector = openApiSelector;
-    } else if (props.currentPage === PAGE_ASYNCAPI) {
+    } else if (location.pathname.includes(PAGE_ASYNCAPI)) {
         visibleSelector = asyncApiSelector;
     }
 
-    let handlePageSelect = function (e) {
+    let handlePageSelect = function () {
         e.preventDefault();
         navigate(e.target.getAttribute('href'));
         return false;
@@ -98,4 +114,4 @@ function SchemaSelector(props) {
     );
 }
 
-export default connect(mapStateToProps)(SchemaSelector);
+export default connect(mapStateToProps, mapDispatchToProps)(SchemaSelector);
