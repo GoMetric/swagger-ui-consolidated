@@ -13,7 +13,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import CssBaseline from '@mui/material/CssBaseline';
 import Drawer from '@mui/material/Drawer';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled, alpha, useTheme } from '@mui/material/styles';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ApiIcon from '@mui/icons-material/Api';
 import Divider from '@mui/material/Divider';
@@ -89,6 +89,19 @@ export default function Layout() {
         </ListItem>
     );
 
+    const StyledSchemaSelector = styled(SchemaSelector)(({ theme }) => ({
+        position: 'relative',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: '#fff',
+        marginRight: theme.spacing(2),
+        marginLeft: 0,
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(3),
+            width: 'auto',
+        },
+    }));
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline/>
@@ -104,7 +117,8 @@ export default function Layout() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>API Dashboard</Typography>
+                    <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>API Dashboard</Typography>
+                    <StyledSchemaSelector />
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -133,7 +147,6 @@ export default function Layout() {
             </Drawer>
             <Main open={open}>
                 <DrawerHeader />
-                <SchemaSelector />
                 <Routes>
                     <Route path="*" element={<WelcomePage/>} />
                     <Route path="/openapi" element={<OpenApiPage/>}>

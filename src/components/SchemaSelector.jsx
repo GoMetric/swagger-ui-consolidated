@@ -1,6 +1,8 @@
 import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 export const PAGE_OPENAPI = 'openapi';
 export const PAGE_ASYNCAPI = 'asyncapi';
@@ -53,17 +55,17 @@ function SchemaSelector(props) {
     let openApiSelector = null;
     if (props.openApiSchemas && props.openApiSchemas.length > 0) {
         openApiSelector = (
-            <select onChange={handleOpenApiSchemaChange} style={styles.select} value={props.currentOpenApiSchemaSlug}>
+            <Select onChange={handleOpenApiSchemaChange} value={props.currentOpenApiSchemaSlug}>
                 {
                     props.openApiSchemas.map(
                         schema => (
-                            <option value={schema.slug} key={schema.slug}>
+                            <MenuItem value={schema.slug} key={schema.slug}>
                                 {schema.name} ({schema.url})
-                            </option>
+                            </MenuItem>
                         )
                     )
                 }
-            </select>
+            </Select>
         );
     }
 
@@ -76,17 +78,17 @@ function SchemaSelector(props) {
     let asyncApiSelector = null;
     if (props.asyncApiSchemas && props.asyncApiSchemas.length > 0) {
         asyncApiSelector = (
-            <select onChange={handleAsyncApiSchemaChange} style={styles.select} value={props.currentAsyncApiSchemaSlug}>
+            <Select onChange={handleAsyncApiSchemaChange} value={props.currentAsyncApiSchemaSlug}>
                 {
                     props.asyncApiSchemas.map(
                         schema => (
-                            <option value={schema.slug} key={schema.slug}>
-                                {schema.name} ({schema.url})
-                            </option>
+                            <MenuItem value={schema.slug} key={schema.slug}>
+                                {schema.name}
+                            </MenuItem>
                         )
                     )
                 }
-            </select>
+            </Select>
         );
     }
 
@@ -97,11 +99,7 @@ function SchemaSelector(props) {
         visibleSelector = asyncApiSelector;
     }
 
-    return (
-        <div style={styles.root}>
-            {visibleSelector}
-        </div>
-    );
+    return (<div>{visibleSelector}</div>);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SchemaSelector);
