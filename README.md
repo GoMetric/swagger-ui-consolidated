@@ -26,7 +26,7 @@ Example configuration:
     {
       "name": "Slack Real Time Messaging API",
       "slug": "slack-messaging",
-      "url:": "https://raw.githubusercontent.com/asyncapi/spec/master/examples/slack-rtm.yml"
+      "url": "https://raw.githubusercontent.com/asyncapi/spec/master/examples/slack-rtm.yml"
     }
   ]
 }
