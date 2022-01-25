@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {connect, Provider} from 'react-redux';
 import { useParams, useNavigate } from "react-router-dom";
-import {createStore} from "redux";
 import {PAGE_ASYNCAPI} from "./SchemaSelector";
-
+import "@asyncapi/web-component/lib/asyncapi-web-component";
 
 const mapStateToProps = (state) => {
     // find current schema config
@@ -55,13 +54,11 @@ function AsyncApiPage({ currentAsyncApiSchema, currentSlug, changeSchema }) {
     return (
         <>
             <asyncapi-component
-                schemaUrl={url}s
+                schemaUrl={url}
                 cssImportPath="https://unpkg.com/@asyncapi/react-component@0.24.19/lib/styles/fiori.css">
             </asyncapi-component>
         </>
     );
 }
-
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(AsyncApiPage);
