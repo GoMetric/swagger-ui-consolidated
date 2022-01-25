@@ -60,7 +60,7 @@ function SchemaSelector(props) {
                     props.openApiSchemas.map(
                         schema => (
                             <MenuItem value={schema.slug} key={schema.slug}>
-                                {schema.name} ({schema.url})
+                                {schema.name}
                             </MenuItem>
                         )
                     )
