@@ -97,18 +97,8 @@ function SchemaSelector(props) {
         visibleSelector = asyncApiSelector;
     }
 
-    let handlePageSelect = function () {
-        e.preventDefault();
-        navigate(e.target.getAttribute('href'));
-        return false;
-    }
-
     return (
         <div style={styles.root}>
-            <ul>
-                <li><a href="/openapi" onClick={handlePageSelect}>OpenApi specifications</a></li>
-                <li><a href="/asyncapi" onClick={handlePageSelect}>AsyncApi specifications</a></li>
-            </ul>
             {visibleSelector}
         </div>
     );
