@@ -1,72 +1,115 @@
 import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+export const PAGE_OPENAPI = 'openapi';
+export const PAGE_ASYNCAPI = 'asyncapi';
 
 const mapStateToProps = (state) => {
     return {
-        schemas: state && state.schemas,
-        currentSchemaSlug: state && state.currentSchemaSlug
+        currentPage: state && state.currentPage,
+        openApiSchemas: state && state.openApiSchemas,
+        currentOpenApiSchemaSlug: state && state.currentOpenApiSchemaSlug,
+        asyncApiSchemas: state && state.asyncApiSchemas,
+        currentAsyncApiSchemaSlug: state && state.currentAsyncApiSchemaSlug
     }
 };
 
+const mapDispatchToProps = (dispatch) => ({
+    changeSchema: (page, slug) => {
+        dispatch(
+            {
+                type: 'SCHEMA_CHANGED',
+                currentPage: page,
+                slug: slug
+            }
+        );
+    }
+});
+
 const styles = {
+    root: {
+        margin: '0 auto',
+        maxWidth: '1460px',
+        padding: '0 20px',
+        width: '100%'
+    },
     select: {
         fontSize: "18px",
     }
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-        /**
-         * @param {string} schemaSlug
-         */
-        changeSwaggerSchema: (schemaSlug) => {
-            dispatch(
-                {
-                    type: 'SWAGGER_SCHEMA_CHANGED',
-                    schemaSlug
-                }
-            );
-        }
-    }
-};
-
 function SchemaSelector(props) {
     const navigate = useNavigate();
+    const location = useLocation();
 
-    if (!props.currentSchemaSlug && props.schemas) {
-        navigate("/schemas/" + props.schemas[0].slug);
-    }
+    const currentSlug = location.pathname.split('/')[1] ?? null;
 
-    const handleSchemaChange = function(e) {
+    const handleOpenApiSchemaChange = function(e) {
         const schemaSlug = e.target.value;
-
-        // change address
-        navigate("/schemas/" + schemaSlug);
+        navigate("/openapi/" + schemaSlug);
     };
 
-    let selector = null;
-    if (props.schemas && props.schemas.length > 0) {
-        selector = (
-            <div>
-                <select onChange={handleSchemaChange} style={styles.select} value={props.currentSchemaSlug}>
-                    {
-                        props.schemas.map(
-                            schema => (
-                                <option value={schema.slug} key={schema.slug}>
-                                    {schema.name} ({schema.url})
-                                </option>
-                            )
+    let openApiSelector = null;
+    if (props.openApiSchemas && props.openApiSchemas.length > 0) {
+        openApiSelector = (
+            <select onChange={handleOpenApiSchemaChange} style={styles.select} value={props.currentOpenApiSchemaSlug}>
+                {
+                    props.openApiSchemas.map(
+                        schema => (
+                            <option value={schema.slug} key={schema.slug}>
+                                {schema.name} ({schema.url})
+                            </option>
                         )
-                    }
-                </select>
-            </div>
+                    )
+                }
+            </select>
         );
     }
 
+    const handleAsyncApiSchemaChange = function(e) {
+        const schemaSlug = e.target.value;
+        props.changeSchema(PAGE_ASYNCAPI, schemaSlug);
+        navigate("/asyncapi/" + schemaSlug);
+    };
+
+    let asyncApiSelector = null;
+    if (props.asyncApiSchemas && props.asyncApiSchemas.length > 0) {
+        asyncApiSelector = (
+            <select onChange={handleAsyncApiSchemaChange} style={styles.select} value={props.currentAsyncApiSchemaSlug}>
+                {
+                    props.asyncApiSchemas.map(
+                        schema => (
+                            <option value={schema.slug} key={schema.slug}>
+                                {schema.name} ({schema.url})
+                            </option>
+                        )
+                    )
+                }
+            </select>
+        );
+    }
+
+    let visibleSelector = null;
+    if (location.pathname.includes(PAGE_OPENAPI)) {
+        visibleSelector = openApiSelector;
+    } else if (location.pathname.includes(PAGE_ASYNCAPI)) {
+        visibleSelector = asyncApiSelector;
+    }
+
+    let handlePageSelect = function () {
+        e.preventDefault();
+        navigate(e.target.getAttribute('href'));
+        return false;
+    }
+
     return (
-        <div className="swagger-ui">
-            <div style={styles.root} className="wrapper block col-12">{selector}</div>
+        <div style={styles.root}>
+            <ul>
+                <li><a href="/openapi" onClick={handlePageSelect}>OpenApi specifications</a></li>
+                <li><a href="/asyncapi" onClick={handlePageSelect}>AsyncApi specifications</a></li>
+            </ul>
+            {visibleSelector}
         </div>
     );
 }

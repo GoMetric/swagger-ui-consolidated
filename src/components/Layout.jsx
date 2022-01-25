@@ -1,72 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import SchemaSelector from './SchemaSelector';
-import SwaggerUI from 'swagger-ui'
-import 'swagger-ui/dist/swagger-ui.css';
-import { connect } from 'react-redux';
-import { useParams } from "react-router-dom";
+import React from 'react';
+import SchemaSelector from "./SchemaSelector";
+import {Route, Routes} from "react-router-dom";
+import WelcomePage from '/components/WelcomePage.jsx';
+import OpenApiPage from '/components/OpenApiPage.jsx';
+import AsyncApiPage from '/components/AsyncApiPage.jsx';
 
-const initSwaggerUi = function(url) {
-    let ui = SwaggerUI({
-        url,
-        dom_id: '#swagger-ui-container',
-    });
-};
-
-const mapStateToProps = (state) => {
-    // find current schema config
-    let currentSwaggerSchema = null;
-    if (state && state.schemas && state.schemas.length > 0 && state.currentSchemaSlug) {
-        for (let i = 0; i < state.schemas.length; i++) {
-            if (state.schemas[i].slug === state.currentSchemaSlug) {
-                currentSwaggerSchema = state.schemas[i];
-                break;
-            }
-        }
-
-    }
-
-    return {
-        currentSwaggerSchema: currentSwaggerSchema
-    }
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        /**
-         * @param {string} schemaSlug
-         */
-        changeSwaggerSchema: (schemaSlug) => {
-            dispatch(
-                {
-                    type: 'SWAGGER_SCHEMA_CHANGED',
-                    schemaSlug
-                }
-            );
-        }
-    }
-};
-
-function Layout(props) {
-    // build swagger ui
-    if (props.currentSwaggerSchema) {
-        initSwaggerUi(props.currentSwaggerSchema.url);
-    }
-
-    // read schema slug from uri
-    let params = useParams();
-
-    useEffect(() => {
-        if (params.schemaSlug) {
-            props.changeSwaggerSchema(params.schemaSlug);
-        }
-    });
-
+export default function Layout() {
     return (
         <div>
             <SchemaSelector />
-            <div id="swagger-ui-container" />
+            <div>
+                <Routes>
+                    <Route path="*" element={<WelcomePage/>} />
+                    <Route path="/openapi" element={<OpenApiPage/>}>
+                        <Route path=":schemaSlug" element={<OpenApiPage/>} />
+                    </Route>
+                    <Route path="/asyncapi" element={<AsyncApiPage/>}>
+                        <Route path=":schemaSlug" element={<AsyncApiPage/>} />
+                    </Route>
+                </Routes>
+            </div>
         </div>
     );
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Layout);
+};

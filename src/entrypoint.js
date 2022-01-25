@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from "react-dom";
-import Layout from '/components/Layout.jsx';
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
+import Layout from "./components/Layout";
+import {PAGE_OPENAPI, PAGE_ASYNCAPI} from "./components/SchemaSelector";
 
 // store
 let initialState = {
@@ -19,13 +20,25 @@ let store = createStore(
             case 'CONFIG_LOADED':
                 return {
                     ...state,
-                    schemas: action.config.openapi
+                    currentPage: null,
+                    openApiSchemas: action.config.openapi,
+                    currentOpenApiSchemaSlug: action.config.openapi[0].slug,
+                    asyncApiSchemas: action.config.asyncapi,
+                    currentAsyncApiSchemaSlug: action.config.asyncapi[0].slug
                 };
-            case 'SWAGGER_SCHEMA_CHANGED':
-                return {
+            case 'SCHEMA_CHANGED':
+                let newState = {
                     ...state,
-                    currentSchemaSlug: action.schemaSlug
+                    currentPage: action.currentPage
                 }
+
+                if (action.currentPage === PAGE_OPENAPI) {
+                    newState.currentOpenApiSchemaSlug = action.slug;
+                } else if (action.currentPage === PAGE_ASYNCAPI) {
+                    newState.currentAsyncApiSchemaSlug = action.slug;
+                }
+
+                return newState;
         }
     },
     composeWithDevTools(
@@ -39,12 +52,7 @@ let store = createStore(
 ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>
-            <Routes>
-                <Route path="*" element={<Layout/>} />
-                <Route path="/schemas" element={<Layout/>}>
-                    <Route path=":schemaSlug" element={<Layout/>} />
-                </Route>
-            </Routes>
+            <Layout />
         </BrowserRouter>
     </Provider>,
     document.getElementById('app')
