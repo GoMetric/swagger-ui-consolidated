@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import Button from '@mui/material/Button';
@@ -11,11 +10,11 @@ export const PAGE_ASYNCAPI = 'asyncapi';
 
 const mapStateToProps = (state) => {
     return {
-        currentPage: state && state.currentPage,
-        openApiSchemas: state && state.openApiSchemas,
-        currentOpenApiSchemaSlug: state && state.currentOpenApiSchemaSlug,
-        asyncApiSchemas: state && state.asyncApiSchemas,
-        currentAsyncApiSchemaSlug: state && state.currentAsyncApiSchemaSlug
+        currentPage: state?.currentPage,
+        openApiSchemas: state?.openApiSchemas,
+        currentOpenApiSchemaSlug: state?.currentOpenApiSchemaSlug,
+        asyncApiSchemas: state?.asyncApiSchemas,
+        currentAsyncApiSchemaSlug: state?.currentAsyncApiSchemaSlug
     }
 };
 
@@ -32,10 +31,6 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 function SchemaSelector(props) {
-    if (!props.currentPage) {
-        return (<div></div>);
-    }
-
     const navigate = useNavigate();
 
     const handleOpenApiSchemaChange = function(e) {
@@ -54,6 +49,12 @@ function SchemaSelector(props) {
         setMenu(null);
     }
 
+    const [menu, setMenu] = React.useState(null);
+
+    const handleButtonClick = function (event) {
+        setMenu(event.currentTarget);
+    };
+
     let schemas = null;
     let schemaChangeHandler = null;
     let currentSchemaSlug = null;
@@ -66,16 +67,14 @@ function SchemaSelector(props) {
         schemaChangeHandler = handleAsyncApiSchemaChange;
         currentSchemaSlug = props.currentAsyncApiSchemaSlug;
     } else {
-        return (<div></div>);
+        return (<div>No page</div>);
+    }
+
+    if (!schemas || schemas.length === 0 || !currentSchemaSlug) {
+        return (<div>No schemas</div>);
     }
 
     let currentSchema = schemas.find((schema) => schema.slug === currentSchemaSlug);
-
-    const [menu, setMenu] = React.useState(null);
-
-    const handleButtonClick = function (event) {
-        setMenu(event.currentTarget);
-    };
 
     return (
         <div>

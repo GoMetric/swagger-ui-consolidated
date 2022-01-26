@@ -15,41 +15,53 @@ const mapStateToProps = (state) => {
     
     return {
         currentAsyncApiSchema,
-        currentSlug: state?.currentAsyncApiSchemaSlug,
     }
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    changeSchema: (page, slug) => {
+    /**
+     * @param {string} slug
+     */
+    changeSchema: (slug) => {
+        if (!slug) {
+            return;
+        }
+
         dispatch(
             {
                 type: 'SCHEMA_CHANGED',
-                currentPage: page,
+                currentPage: PAGE_ASYNCAPI,
                 slug: slug
             }
         );
     }
 });
 
-function AsyncApiPage({ currentAsyncApiSchema, currentSlug, changeSchema }) {
-    const { schemaSlug } = useParams();
+function AsyncApiPage(props) {
+    const urlParams = useParams();
     const navigate = useNavigate();
+    const currentSlug = props?.currentAsyncApiSchema?.slug;
 
     useEffect(() => {
-        if (!!currentSlug && !!schemaSlug && currentSlug !== schemaSlug) {
-            changeSchema(PAGE_ASYNCAPI, schemaSlug);
+        if (!urlParams.schemaSlug && props.currentAsyncApiSchema) {
+            navigate(`/asyncapi/${props.currentAsyncApiSchema.slug}`);
+            props.changeSchema(props.currentAsyncApiSchema.slug);
         }
+    }, [currentSlug, urlParams.schemaSlug]);
 
-        if (typeof schemaSlug === 'undefined' && currentSlug) {
-            navigate(`/asyncapi/${currentSlug}`);
+    useEffect(() => {
+        if (!!currentSlug && !!urlParams.schemaSlug && currentSlug !== urlParams.schemaSlug) {
+            props.changeSchema(urlParams.schemaSlug);
         }
-    }, [currentSlug, schemaSlug]);
+    }, [currentSlug, urlParams.schemaSlug]);
 
-    if (!currentAsyncApiSchema || currentSlug !== schemaSlug) {
+
+
+    if (!props.currentAsyncApiSchema) {
         return <div>Loading</div>;
     }
 
-    const { url } = currentAsyncApiSchema;
+    const { url } = props.currentAsyncApiSchema;
 
     return (
         <>

@@ -36,6 +36,10 @@ const mapDispatchToProps = dispatch => {
          * @param {string} slug
          */
         changeSchema: (slug) => {
+            if (!slug) {
+                return;
+            }
+
             dispatch(
                 {
                     type: 'SCHEMA_CHANGED',
@@ -49,21 +53,21 @@ const mapDispatchToProps = dispatch => {
 
 function OpenApiPage(props) {
     // read schema slug from uri
-    const params = useParams();
+    const urlParams = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!params.schemaSlug && props.currentOpenApiSchema) {
+        if (!urlParams.schemaSlug && props.currentOpenApiSchema) {
             navigate("/openapi/" + props.currentOpenApiSchema.slug)
         }
     });
 
     useEffect(() => {
         // build swagger ui
-        if (params.schemaSlug && props.currentOpenApiSchema) {
-            props.changeSchema(params.schemaSlug);
+        if (urlParams.schemaSlug && props.currentOpenApiSchema) {
+            props.changeSchema(urlParams.schemaSlug);
 
-            if (params.schemaSlug === props.currentOpenApiSchema.slug) {
+            if (urlParams.schemaSlug === props.currentOpenApiSchema.slug) {
                 initSwaggerUi(props.currentOpenApiSchema.url);
             }
         }

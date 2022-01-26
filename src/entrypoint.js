@@ -10,15 +10,20 @@ import {PAGE_OPENAPI, PAGE_ASYNCAPI} from "./components/SchemaSelector";
 
 // store
 let initialState = {
-    schemas: null,
-    currentSchemaSlug: null
+    currentPage: null,
+    openApiSchemas: null,
+    currentOpenApiSchemaSlug: null,
+    asyncApiSchemas: null,
+    currentAsyncApiSchemaSlug: null,
 };
 
 let store = createStore(
     function(state = initialState, action) {
+        let newState;
+
         switch (action.type) {
             case 'CONFIG_LOADED':
-                return {
+                newState = {
                     ...state,
                     currentPage: null,
                     openApiSchemas: action.config.openapi,
@@ -26,8 +31,9 @@ let store = createStore(
                     asyncApiSchemas: action.config.asyncapi,
                     currentAsyncApiSchemaSlug: action.config.asyncapi[0].slug
                 };
+                break;
             case 'SCHEMA_CHANGED':
-                let newState = {
+                newState = {
                     ...state,
                     currentPage: action.currentPage
                 }
@@ -37,9 +43,13 @@ let store = createStore(
                 } else if (action.currentPage === PAGE_ASYNCAPI) {
                     newState.currentAsyncApiSchemaSlug = action.slug;
                 }
-
-                return newState;
+                break;
+            default:
+                newState = state;
+                break;
         }
+
+        return newState;
     },
     composeWithDevTools(
         applyMiddleware(
