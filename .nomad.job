@@ -79,6 +79,7 @@ job "[[.name]]" {
       "name": "{{index .ServiceMeta "asyncapi-schema-name"}}",
       "url": "{{index .ServiceMeta "asyncapi-schema-url"}}"
     }{{ $firstItem = false }}{{ end }}{{ end }}{{ end }}
+  ]
 }
 EOF
         destination = "local/config.json"
