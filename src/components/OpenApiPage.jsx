@@ -4,6 +4,7 @@ import 'swagger-ui/dist/swagger-ui.css';
 import { connect } from 'react-redux';
 import {useNavigate, useParams} from "react-router-dom";
 import {PAGE_OPENAPI} from "./SchemaSelector";
+import Typography from "@mui/material/Typography";
 
 const initSwaggerUi = function(url) {
     let ui = SwaggerUI({
@@ -43,7 +44,7 @@ const mapDispatchToProps = dispatch => {
             dispatch(
                 {
                     type: 'SCHEMA_CHANGED',
-                    currentPage: PAGE_OPENAPI,
+                    page: PAGE_OPENAPI,
                     slug: slug
                 }
             );
@@ -72,6 +73,10 @@ function OpenApiPage(props) {
             }
         }
     });
+
+    if (!props.currentOpenApiSchema) {
+        return <Typography component="h1" align="center">No OpenApi Schemas</Typography>;
+    }
 
     return (
         <div>

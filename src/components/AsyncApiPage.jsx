@@ -3,6 +3,7 @@ import {connect, Provider} from 'react-redux';
 import { useParams, useNavigate } from "react-router-dom";
 import {PAGE_ASYNCAPI} from "./SchemaSelector";
 import "@asyncapi/web-component/lib/asyncapi-web-component";
+import Typography from "@mui/material/Typography";
 
 const mapStateToProps = (state) => {
     // find current schema config
@@ -30,7 +31,7 @@ const mapDispatchToProps = (dispatch) => ({
         dispatch(
             {
                 type: 'SCHEMA_CHANGED',
-                currentPage: PAGE_ASYNCAPI,
+                page: PAGE_ASYNCAPI,
                 slug: slug
             }
         );
@@ -56,9 +57,8 @@ function AsyncApiPage(props) {
     }, [currentSlug, urlParams.schemaSlug]);
 
 
-
     if (!props.currentAsyncApiSchema) {
-        return <div>Loading</div>;
+        return <Typography component="h1" align="center">No AsyncApi Schemas</Typography>;
     }
 
     const { url } = props.currentAsyncApiSchema;

@@ -27,20 +27,20 @@ let store = createStore(
                     ...state,
                     currentPage: null,
                     openApiSchemas: action.config.openapi,
-                    currentOpenApiSchemaSlug: action.config.openapi[0].slug,
+                    currentOpenApiSchemaSlug: (action.config.openapi && action.config.openapi.length > 0)
+                        ? action.config.openapi[0].slug
+                        : null,
                     asyncApiSchemas: action.config.asyncapi,
-                    currentAsyncApiSchemaSlug: action.config.asyncapi[0].slug
+                    currentAsyncApiSchemaSlug: (action.config.asyncapi && action.config.asyncapi.length > 0)
+                        ? action.config.asyncapi[0].slug
+                        : null,
                 };
                 break;
             case 'SCHEMA_CHANGED':
-                newState = {
-                    ...state,
-                    currentPage: action.currentPage
-                }
-
-                if (action.currentPage === PAGE_OPENAPI) {
-                    newState.currentOpenApiSchemaSlug = action.slug;
-                } else if (action.currentPage === PAGE_ASYNCAPI) {
+                newState = state;
+                if (action.page === PAGE_OPENAPI) {
+                    state.currentOpenApiSchemaSlug = action.slug;
+                } else if (action.page === PAGE_ASYNCAPI) {
                     newState.currentAsyncApiSchemaSlug = action.slug;
                 }
                 break;

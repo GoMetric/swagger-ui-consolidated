@@ -10,7 +10,6 @@ export const PAGE_ASYNCAPI = 'asyncapi';
 
 const mapStateToProps = (state) => {
     return {
-        currentPage: state?.currentPage,
         openApiSchemas: state?.openApiSchemas,
         currentOpenApiSchemaSlug: state?.currentOpenApiSchemaSlug,
         asyncApiSchemas: state?.asyncApiSchemas,
@@ -23,7 +22,7 @@ const mapDispatchToProps = (dispatch) => ({
         dispatch(
             {
                 type: 'SCHEMA_CHANGED',
-                currentPage: page,
+                page: page,
                 slug: slug
             }
         );
@@ -32,6 +31,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 function SchemaSelector(props) {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleOpenApiSchemaChange = function(e) {
         const schemaSlug = e.target.getAttribute('slug');
@@ -58,20 +58,20 @@ function SchemaSelector(props) {
     let schemas = null;
     let schemaChangeHandler = null;
     let currentSchemaSlug = null;
-    if (props.currentPage === PAGE_OPENAPI) {
+    if (location.pathname.indexOf('/' + PAGE_OPENAPI) === 0) {
         schemas = props.openApiSchemas;
         schemaChangeHandler = handleOpenApiSchemaChange;
         currentSchemaSlug = props.currentOpenApiSchemaSlug;
-    } else if (props.currentPage === PAGE_ASYNCAPI) {
+    } else if (location.pathname.indexOf('/' + PAGE_ASYNCAPI) === 0) {
         schemas = props.asyncApiSchemas;
         schemaChangeHandler = handleAsyncApiSchemaChange;
         currentSchemaSlug = props.currentAsyncApiSchemaSlug;
     } else {
-        return (<div>No page</div>);
+        return (<div></div>);
     }
 
     if (!schemas || schemas.length === 0 || !currentSchemaSlug) {
-        return (<div>No schemas</div>);
+        return (<div></div>);
     }
 
     let currentSchema = schemas.find((schema) => schema.slug === currentSchemaSlug);
