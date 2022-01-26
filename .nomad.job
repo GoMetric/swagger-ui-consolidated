@@ -33,7 +33,7 @@ job "[[.name]]" {
     task "[[.name]]" {
       driver = "docker"
       config {
-        image = "gometric/swagger-ui-consolidated:0.3.0"
+        image = "gometric/swagger-ui-consolidated:[[.imageversion]]"
         ports = ["http"]
         volumes = [
           "local/config.json:/var/www/swagger-ui/config.json"

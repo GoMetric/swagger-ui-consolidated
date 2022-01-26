@@ -31,3 +31,18 @@ Example configuration:
   ]
 }
 ```
+
+## Nomad job
+
+Deploy app to Nomad cluster:
+
+```
+levant deploy \
+    -log-level=debug \
+    -address $NOMAD_ADDR_PROD \
+    -var dc="$NOMAD_DC" \
+    -var name="$NOMAD_JOB_NAME" \
+    -var urlprefix="$PUBLIC_URL_PROD" \
+    -var imageversion="$IMAGE_VERSION" \
+    .nomad.job
+```
