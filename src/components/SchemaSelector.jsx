@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+import Button from '@mui/material/Button';
 
 export const PAGE_OPENAPI = 'openapi';
 export const PAGE_ASYNCAPI = 'asyncapi';
@@ -29,77 +31,73 @@ const mapDispatchToProps = (dispatch) => ({
     }
 });
 
-const styles = {
-    root: {
-        margin: '0 auto',
-        maxWidth: '1460px',
-        padding: '0 20px',
-        width: '100%'
-    },
-    select: {
-        fontSize: "18px",
-    }
-};
-
 function SchemaSelector(props) {
-    const navigate = useNavigate();
-    const location = useLocation();
+    if (!props.currentPage) {
+        return (<div></div>);
+    }
 
-    const currentSlug = location.pathname.split('/')[1] ?? null;
+    const navigate = useNavigate();
 
     const handleOpenApiSchemaChange = function(e) {
-        const schemaSlug = e.target.value;
+        const schemaSlug = e.target.getAttribute('slug');
         navigate("/openapi/" + schemaSlug);
     };
 
-    let openApiSelector = null;
-    if (props.openApiSchemas && props.openApiSchemas.length > 0) {
-        openApiSelector = (
-            <Select onChange={handleOpenApiSchemaChange} value={props.currentOpenApiSchemaSlug}>
-                {
-                    props.openApiSchemas.map(
-                        schema => (
-                            <MenuItem value={schema.slug} key={schema.slug}>
-                                {schema.name}
-                            </MenuItem>
-                        )
-                    )
-                }
-            </Select>
-        );
-    }
-
     const handleAsyncApiSchemaChange = function(e) {
-        const schemaSlug = e.target.value;
-        props.changeSchema(PAGE_ASYNCAPI, schemaSlug);
+        const schemaSlug = e.target.getAttribute('slug');
         navigate("/asyncapi/" + schemaSlug);
     };
 
-    let asyncApiSelector = null;
-    if (props.asyncApiSchemas && props.asyncApiSchemas.length > 0) {
-        asyncApiSelector = (
-            <Select onChange={handleAsyncApiSchemaChange} value={props.currentAsyncApiSchemaSlug}>
-                {
-                    props.asyncApiSchemas.map(
-                        schema => (
-                            <MenuItem value={schema.slug} key={schema.slug}>
-                                {schema.name}
-                            </MenuItem>
-                        )
+    let schemas = null;
+    let schemaChangeHandler = null;
+    let currentSchemaSlug = null;
+    if (props.currentPage === PAGE_OPENAPI) {
+        schemas = props.openApiSchemas;
+        schemaChangeHandler = handleOpenApiSchemaChange;
+        currentSchemaSlug = props.currentOpenApiSchemaSlug;
+    } else if (props.currentPage === PAGE_ASYNCAPI) {
+        schemas = props.asyncApiSchemas;
+        schemaChangeHandler = handleAsyncApiSchemaChange;
+        currentSchemaSlug = props.currentAsyncApiSchemaSlug;
+    } else {
+        return (<div></div>);
+    }
+
+    let currentSchema = schemas.find((schema) => schema.slug === currentSchemaSlug);
+
+    const [menu, setMenu] = React.useState(null);
+
+    const handleButtonClick = function (event) {
+        setMenu(event.currentTarget);
+    };
+
+    return (
+        <div>
+            <Button color="inherit" onClick={handleButtonClick}>
+                <span>
+                    {currentSchema.name}
+                </span>
+            </Button>
+            <Menu open={Boolean(menu)} anchorEl={menu} onClose={schemaChangeHandler}>
+            {
+                schemas.map(
+                    schema => (
+                        <MenuItem
+                            component="a"
+                            data-no-link="true"
+                            key={schema.slug}
+                            selected={schema.slug === currentSchema.slug}
+                            slug={schema.slug}
+                            onClick={schemaChangeHandler}
+                        >
+                            {schema.name}
+                        </MenuItem>
                     )
-                }
-            </Select>
-        );
-    }
-
-    let visibleSelector = null;
-    if (location.pathname.includes(PAGE_OPENAPI)) {
-        visibleSelector = openApiSelector;
-    } else if (location.pathname.includes(PAGE_ASYNCAPI)) {
-        visibleSelector = asyncApiSelector;
-    }
-
-    return (<div>{visibleSelector}</div>);
+                )
+            }
+            </Menu>
+        </div>
+    );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SchemaSelector);
