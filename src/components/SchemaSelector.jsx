@@ -41,12 +41,18 @@ function SchemaSelector(props) {
     const handleOpenApiSchemaChange = function(e) {
         const schemaSlug = e.target.getAttribute('slug');
         navigate("/openapi/" + schemaSlug);
+        setMenu(null);
     };
 
     const handleAsyncApiSchemaChange = function(e) {
         const schemaSlug = e.target.getAttribute('slug');
         navigate("/asyncapi/" + schemaSlug);
+        setMenu(null);
     };
+
+    const closeMenuHandler = function(e) {
+        setMenu(null);
+    }
 
     let schemas = null;
     let schemaChangeHandler = null;
@@ -78,7 +84,7 @@ function SchemaSelector(props) {
                     {currentSchema.name}
                 </span>
             </Button>
-            <Menu open={Boolean(menu)} anchorEl={menu} onClose={schemaChangeHandler}>
+            <Menu open={Boolean(menu)} anchorEl={menu} onClose={closeMenuHandler}>
             {
                 schemas.map(
                     schema => (
