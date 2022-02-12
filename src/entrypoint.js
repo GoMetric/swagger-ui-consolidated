@@ -39,7 +39,7 @@ let store = createStore(
             case 'SCHEMA_CHANGED':
                 newState = state;
                 if (action.page === PAGE_OPENAPI) {
-                    state.currentOpenApiSchemaSlug = action.slug;
+                    newState.currentOpenApiSchemaSlug = action.slug;
                 } else if (action.page === PAGE_ASYNCAPI) {
                     newState.currentAsyncApiSchemaSlug = action.slug;
                 }
