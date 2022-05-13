@@ -1,19 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { useParams } from "react-router-dom";
+import React from 'react';
 
-const mapStateToProps = (state) => {
-    return {};
-};
-
-const mapDispatchToProps = dispatch => {
-    return {};
-};
-
-function WelcomePage(props) {
+export default function WelcomePage() {
     return (
         <div>Welcome</div>
     );
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(WelcomePage);

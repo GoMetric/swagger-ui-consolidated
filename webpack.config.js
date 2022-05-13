@@ -38,7 +38,7 @@ module.exports = {
             {
                 test: /\.(js|jsx)$/,
                 include: [
-                    path.resolve(__dirname, ".")
+                    path.resolve(__dirname, "./src")
                 ],
                 exclude: /node_modules/,
                 use: {
@@ -92,7 +92,7 @@ module.exports = {
         new CopyWebpackPlugin({
             patterns: [
                 {
-                    from: require.resolve('swagger-ui/dist/oauth2-redirect.html'),
+                    from: require.resolve('./node_modules/swagger-ui/dist/oauth2-redirect.html'),
                     to: './'
                 },
                 {

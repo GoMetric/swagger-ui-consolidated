@@ -1,80 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import SwaggerUI from 'swagger-ui'
-import 'swagger-ui/dist/swagger-ui.css';
-import { connect } from 'react-redux';
-import {useNavigate, useParams} from "react-router-dom";
-import {PAGE_OPENAPI} from "./SchemaSelector";
+import React, { useEffect } from 'react';
+import SwaggerUI from 'swagger-ui';
 import Typography from "@mui/material/Typography";
 
-const initSwaggerUi = function(url) {
-    let ui = SwaggerUI({
+import { useSchemasStore, useSchemaStoreDefaults } from '../hooks';
+
+import 'swagger-ui/dist/swagger-ui.css';
+
+const initSwaggerUi = (url) => {
+    SwaggerUI({
         url,
         dom_id: '#swagger-ui-container',
     });
 };
 
-const mapStateToProps = (state) => {
-    // find current schema config
-    let currentOpenApiSchema = null;
-    if (state && state.openApiSchemas && state.openApiSchemas.length > 0 && state.currentOpenApiSchemaSlug) {
-        for (let i = 0; i < state.openApiSchemas.length; i++) {
-            if (state.openApiSchemas[i].slug === state.currentOpenApiSchemaSlug) {
-                currentOpenApiSchema = state.openApiSchemas[i];
-                break;
-            }
-        }
+function OpenApiPage() {
+    const schemasStore = useSchemasStore();
 
-    }
+    useSchemaStoreDefaults();
 
-    return {
-        currentOpenApiSchema: currentOpenApiSchema
-    }
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        /**
-         * @param {string} slug
-         */
-        changeSchema: (slug) => {
-            if (!slug) {
-                return;
-            }
-
-            dispatch(
-                {
-                    type: 'SCHEMA_CHANGED',
-                    page: PAGE_OPENAPI,
-                    slug: slug
-                }
+    useEffect(() => {
+        if (schemasStore.currentSchema && schemasStore.currentStandard) {
+            const schemaSelected = schemasStore.schemas[schemasStore.currentStandard].find(
+              schema => schema.slug === schemasStore.currentSchema
             );
-        }
-    }
-};
 
-function OpenApiPage(props) {
-    // read schema slug from uri
-    const urlParams = useParams();
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (!urlParams.schemaSlug && props.currentOpenApiSchema) {
-            navigate("/openapi/" + props.currentOpenApiSchema.slug)
-        }
-    });
-
-    useEffect(() => {
-        // build swagger ui
-        if (urlParams.schemaSlug && props.currentOpenApiSchema) {
-            props.changeSchema(urlParams.schemaSlug);
-
-            if (urlParams.schemaSlug === props.currentOpenApiSchema.slug) {
-                initSwaggerUi(props.currentOpenApiSchema.url);
+            if (schemaSelected?.url) {
+                initSwaggerUi(schemaSelected?.url);
             }
         }
-    });
+    }, [schemasStore.currentStandard, schemasStore.currentStandard]);
 
-    if (!props.currentOpenApiSchema) {
+    if (!schemasStore.currentStandard) {
         return <Typography component="h1" align="center">No OpenApi Schemas</Typography>;
     }
 
@@ -85,4 +41,4 @@ function OpenApiPage(props) {
     );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(OpenApiPage);
+export default OpenApiPage;
