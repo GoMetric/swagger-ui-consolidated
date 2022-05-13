@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.4.0]
+### Changed
+* Fixed state management, apis now switched correctly
+
 ## [0.3.0]
 ### Added
 * AsyncApi UI
