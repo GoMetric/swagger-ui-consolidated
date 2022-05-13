@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import SchemaSelector from "./SchemaSelector";
-import {Route, Routes, Link, useLocation} from "react-router-dom";
+import {Route, Routes, Link, useLocation, useNavigate} from "react-router-dom";
 import WelcomePage from '/components/WelcomePage.jsx';
 import OpenApiPage from '/components/OpenApiPage.jsx';
 import AsyncApiPage from '/components/AsyncApiPage.jsx';
@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import CssBaseline from '@mui/material/CssBaseline';
 import Drawer from '@mui/material/Drawer';
-import { styled, alpha, useTheme } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ApiIcon from '@mui/icons-material/Api';
 import Divider from '@mui/material/Divider';
@@ -21,17 +21,30 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
+import { useSchemasStore } from '../hooks';
+import { SchemaStandard } from '../constants';
+
+const drawerWidth = 240;
+const layoutDrawerOpenStateLocalstorageKey = 'layoutDrawerOpen';
+
 export default function Layout() {
-    const drawerWidth = 240;
-
-    const theme = useTheme();
     const location = useLocation();
-
-    const layoutDrawerOpenStateLocalstorageKey = 'layoutDrawerOpen';
-
+    const schemasStore = useSchemasStore();
+    const navigate = useNavigate();
+    const theme = useTheme();
     const [open, setDraverOpened] = React.useState(
         localStorage.getItem(layoutDrawerOpenStateLocalstorageKey) === "true" || localStorage.getItem(layoutDrawerOpenStateLocalstorageKey) === null
     );
+
+    useEffect(() => {
+        (async () => {
+            await schemasStore.fetchSchemas();
+        })();
+    }, []);
+
+    if (!schemasStore.isReady) {
+        return null;
+    }
 
     const handleDrawerOpen = () => {
         localStorage.setItem(layoutDrawerOpenStateLocalstorageKey, "true");
@@ -88,8 +101,21 @@ export default function Layout() {
         justifyContent: 'flex-end',
     }));
 
-    const MenuItem = ({to, primary, icon}) => (
-        <ListItem button component={Link} to={to} selected={location.pathname.indexOf(to) === 0}>
+    const MenuItem = ({standard , primary, icon}) => (
+        <ListItem
+          button
+          component={Link}
+          to={`/${standard}`}
+          onClick={(event) => {
+              event.preventDefault();
+
+              schemasStore.setCurrentSchema({
+                  standard,
+                  navigate,
+              });
+          }}
+          selected={location.pathname.indexOf(standard) === 0}
+        >
             <ListItemIcon>{icon}</ListItemIcon>
             <ListItemText primary={primary} />
         </ListItem>
@@ -147,20 +173,26 @@ export default function Layout() {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    <MenuItem to="/openapi" icon={(<ApiIcon/>)} primary="OpenApi"></MenuItem>
-                    <MenuItem to="/asyncapi" icon={(<ApiIcon/>)} primary="AsyncApi"></MenuItem>
+                    <MenuItem
+                      key={SchemaStandard.OPENAPI}
+                      standard={SchemaStandard.OPENAPI}
+                      icon={(<ApiIcon/>)}
+                      primary="OpenApi"
+                    />
+                    <MenuItem
+                      key={SchemaStandard.ASYNCAPI}
+                      standard={SchemaStandard.ASYNCAPI}
+                      icon={(<ApiIcon/>)}
+                      primary="AsyncApi"
+                    />
                 </List>
             </Drawer>
             <Main open={open}>
                 <DrawerHeader />
                 <Routes>
+                    <Route path="/openapi/:slug" element={<OpenApiPage/>} />
+                    <Route path="/asyncapi/:slug" element={<AsyncApiPage/>} />
                     <Route path="*" element={<WelcomePage/>} />
-                    <Route path="/openapi" element={<OpenApiPage/>}>
-                        <Route path=":schemaSlug" element={<OpenApiPage/>} />
-                    </Route>
-                    <Route path="/asyncapi" element={<AsyncApiPage/>}>
-                        <Route path=":schemaSlug" element={<AsyncApiPage/>} />
-                    </Route>
                 </Routes>
             </Main>
         </Box>
