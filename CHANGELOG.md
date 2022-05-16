@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.4.1]
+### Changed
+* Fixed openid authorization
+
 ## [0.4.0]
 ### Changed
 * Fixed state management, apis now switched correctly
