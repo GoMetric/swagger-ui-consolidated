@@ -44,5 +44,9 @@ levant deploy \
     -var name="$NOMAD_JOB_NAME" \
     -var urlprefix="$PUBLIC_URL_PROD" \
     -var imageversion="$IMAGE_VERSION" \
-    .nomad.job
+    .nomad.standalone.job
 ```
+
+There are to nomad file examples:
+* .nomad.standalone.job - Jobs not connected with Consul Connect
+* .nomad.mesh.job - Jobs connected with Consul Connect

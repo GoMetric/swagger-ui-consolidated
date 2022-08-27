@@ -64,21 +64,20 @@ job "[[.name]]" {
 
       template {
         data = <<EOF
-{{ $firstItem := true }}
 {
-  "openapi": [{{ range services }}{{- range service .Name }}{{ if in .Tags "openapi-schema-provider" }}{{ if not $firstItem }}, {{ end }}
+  "openapi": [{{ $firstItem := true }}{{ range services }}{{- range $idx, $service := connect .Name }}{{ if eq $idx 0 }}{{ if in .Tags "openapi-schema-provider" }}{{ if not $firstItem }}, {{ end }}
     {
       "slug": "{{index .ServiceMeta "openapi-schema-slug"}}",
       "name": "{{index .ServiceMeta "openapi-schema-name"}}",
       "url": "{{index .ServiceMeta "openapi-schema-url"}}"
-    }{{ $firstItem = false }}{{ end }}{{ end }}{{ end }}
+    }{{ $firstItem = false }}{{ end }}{{ end }}{{ end }}{{ end }}
   ],
-  "asyncapi": [{{ range services }}{{- range service .Name }}{{ if in .Tags "asyncapi-schema-provider" }}{{ if not $firstItem }}, {{ end }}
+  "asyncapi": [{{ $firstItem := true }}{{ range services }}{{- range $idx, $service := connect .Name }}{{ if eq $idx 0 }}{{ if in .Tags "asyncapi-schema-provider" }}{{ if not $firstItem }}, {{ end }}
     {
       "slug": "{{index .ServiceMeta "asyncapi-schema-slug"}}",
       "name": "{{index .ServiceMeta "asyncapi-schema-name"}}",
       "url": "{{index .ServiceMeta "asyncapi-schema-url"}}"
-    }{{ $firstItem = false }}{{ end }}{{ end }}{{ end }}
+    }{{ $firstItem = false }}{{ end }}{{ end }}{{ end }}{{ end }}
   ]
 }
 EOF

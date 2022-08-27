@@ -1,0 +1,88 @@
+job "[[.name]]" {
+  datacenters = ["[[.dc]]"]
+  type = "service"
+
+  group "[[.name]]" {
+    network {
+      mbits = 100
+      port "http" {
+        to = 80
+      }
+    }
+
+    count = 1
+    constraint {
+      operator  = "distinct_hosts"
+      value     = "true"
+    }
+
+    restart {
+      attempts = 3
+      interval = "20s"
+      delay = "5s"
+      mode = "delay"
+    }
+
+    update {
+      max_parallel     = 1
+      min_healthy_time = "10s"
+      healthy_deadline = "1m"
+      auto_revert      = true
+    }
+
+    task "[[.name]]" {
+      driver = "docker"
+      config {
+        image = "gometric/swagger-ui-consolidated:[[.imageversion]]"
+        ports = ["http"]
+        volumes = [
+          "local/config.json:/var/www/swagger-ui/config.json"
+        ]
+      }
+
+      resources {
+        cpu    = 50
+        memory = 100
+      }
+
+      service {
+        name = "[[.name]]"
+        port = "http"
+        tags = [
+            "traefik.enable=true",
+            "traefik.http.routers.[[.name]].rule=Host(`[[.urlprefix]]`)",
+            "traefik.http.routers.[[.name]].entrypoints=http"
+        ]
+        check {
+          name     = "swagger-ui"
+          type     = "http"
+          path     = "/"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
+
+      template {
+        data = <<EOF
+{
+  "openapi": [{{ $firstItem := true }}{{ range services }}{{- range $idx, $service := service .Name }}{{ if eq $idx 0 }}{{ if in .Tags "openapi-schema-provider" }}{{ if not $firstItem }}, {{ end }}
+    {
+      "slug": "{{index .ServiceMeta "openapi-schema-slug"}}",
+      "name": "{{index .ServiceMeta "openapi-schema-name"}}",
+      "url": "{{index .ServiceMeta "openapi-schema-url"}}"
+    }{{ $firstItem = false }}{{ end }}{{ end }}{{ end }}{{ end }}
+  ],
+  "asyncapi": [{{ $firstItem := true }}{{ range services }}{{- range $idx, $service := service .Name }}{{ if eq $idx 0 }}{{ if in .Tags "asyncapi-schema-provider" }}{{ if not $firstItem }}, {{ end }}
+    {
+      "slug": "{{index .ServiceMeta "asyncapi-schema-slug"}}",
+      "name": "{{index .ServiceMeta "asyncapi-schema-name"}}",
+      "url": "{{index .ServiceMeta "asyncapi-schema-url"}}"
+    }{{ $firstItem = false }}{{ end }}{{ end }}{{ end }}{{ end }}
+  ]
+}
+EOF
+        destination = "local/config.json"
+      }
+    }
+  }
+}
