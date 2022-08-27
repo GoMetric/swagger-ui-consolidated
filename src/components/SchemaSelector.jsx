@@ -39,6 +39,14 @@ function SchemaSelector() {
 
     let currentSchema = schemas.find((schema) => schema.slug === schemasStore.currentSchema);
 
+    schemas.sort((schema1, schema2) => {
+        if (schema1.name === schema2.name) {
+            return 0;
+        }
+
+        return (schema1.name > schema2.name) ? 1 : -1;
+    });
+
     return (
         <div>
             <Button color="inherit" onClick={handleButtonClick}>
