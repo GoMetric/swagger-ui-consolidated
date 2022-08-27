@@ -17,7 +17,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ApiIcon from '@mui/icons-material/Api';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
@@ -102,8 +102,7 @@ export default function Layout() {
     }));
 
     const MenuItem = ({standard , primary, icon}) => (
-        <ListItem
-          button
+        <ListItemButton
           component={Link}
           to={`/${standard}`}
           onClick={(event) => {
@@ -118,7 +117,7 @@ export default function Layout() {
         >
             <ListItemIcon>{icon}</ListItemIcon>
             <ListItemText primary={primary} />
-        </ListItem>
+        </ListItemButton>
     );
 
     const StyledSchemaSelector = styled(SchemaSelector)(({ theme }) => ({

@@ -99,6 +99,10 @@ module.exports = {
                     // sample configuration
                     from: './config.json',
                     to: './'
+                },
+                {
+                    from: './assets/favicon.ico',
+                    to: './'
                 }
             ]
         }),

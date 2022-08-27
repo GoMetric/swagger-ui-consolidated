@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.4.2] - 2022-08-27
+### Fixed
+* Schemas in toolbar selector sorted by name
+
 ## [0.4.1]
 ### Changed
 * Fixed openid authorization
