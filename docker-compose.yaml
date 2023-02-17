@@ -8,3 +8,8 @@ services:
       context: .
     ports:
       - "80:80"
+    volumes:
+      - ./docker/nginx/docker-entrypoint.d/app_config.sh:/docker-entrypoint.d/app_config.sh:ro
+    environment:
+      APP_CONFIG: ${APP_CONFIG}
+

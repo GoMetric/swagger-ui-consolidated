@@ -9,7 +9,11 @@ This allows to build consolidated api documentation for different microservices 
 
 ## Configuration
 
-To configure your own api copy configuration to `config.json`.
+Application reads its configuration from `config.json` file located in root of work directory.
+In Docker environment works in workdir `/var/www/swagger-ui`.
+
+You may pass configuration in `APP_CONFIG` environment variable and it's content will be stored during initiation 
+of container, or you may mount your own configuration file.
 
 Example configuration:
 

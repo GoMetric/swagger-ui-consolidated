@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2023-02-17
+* Bump node & nginx versions
+* Allow configure application configuration by environment variable `APP_CONFIG`
+
 ## [0.4.2] - 2022-08-27
 ### Fixed
 * Schemas in toolbar selector sorted by name
