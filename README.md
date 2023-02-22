@@ -7,6 +7,14 @@ This allows to build consolidated api documentation for different microservices 
 
 ![UI](https://github.com/GoMetric/swagger-ui-consolidated/blob/master/docs/ui.png?raw=true)
 
+## Installation
+
+Use docker image:
+
+```
+docker pull gometric/swagger-ui-consolidated
+```
+
 ## Configuration
 
 Application reads its configuration from `config.json` file located in root of work directory.
