@@ -44,7 +44,49 @@ Example configuration:
 }
 ```
 
-## Nomad job
+## Running in a cloud
+
+### Kubernetes
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: swagger-ui-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: swagger-ui
+  template:
+    metadata:
+      labels:
+        app: swagger-ui
+    spec:
+      containers:
+        - name: swagger-ui
+          image: gometric/swagger-ui-consolidated:latest
+          ports:
+            - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: swagger-ui-service
+spec:
+  selector:
+    app: swagger-ui
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  type: LoadBalancer
+```
+
+
+### Nomad job
 
 Deploy app to Nomad cluster:
 
@@ -59,6 +101,6 @@ levant deploy \
     .nomad.standalone.job
 ```
 
-There are to nomad file examples:
+There are two nomad file examples:
 * .nomad.standalone.job - Jobs not connected with Consul Connect
 * .nomad.mesh.job - Jobs connected with Consul Connect
